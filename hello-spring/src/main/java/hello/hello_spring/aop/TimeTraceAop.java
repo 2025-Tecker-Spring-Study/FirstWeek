@@ -1,0 +1,30 @@
+package hello.hello_spring.aop;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.springframework.stereotype.Component;
+
+@Component
+@Aspect
+public class TimeTraceAop {
+
+    @Around("execution(*hello.hello_spring..*(..))")
+    // @Around : 공통 관심 사항을  타겟팅
+    public Object execute(ProceedingJoinPoint joinPoint) throws Throwable {
+
+        // 소요 시간을 구하는 로직
+        long start = System.currentTimeMillis();
+        System.out.println("START: " + joinPoint.toString());
+
+        try {
+            return joinPoint.proceed();
+        } finally {
+            long finish = System.currentTimeMillis();
+            long timeMs = finish - start;
+
+            System.out.println("END: " + joinPoint.toString() + " " + timeMs + "ms");
+        }
+    }
+
+}
